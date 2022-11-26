@@ -1,5 +1,6 @@
 import * as jwt from "jsonwebtoken";
-import { User } from "@prisma/client";
+import { TicketType, User } from "@prisma/client";
+import faker from "@faker-js/faker";
 
 import { createUser } from "./factories";
 import { createSession } from "./factories/sessions-factory";
@@ -14,6 +15,8 @@ export async function cleanDb() {
   await prisma.session.deleteMany({});
   await prisma.user.deleteMany({});
   await prisma.ticketType.deleteMany({});
+  await prisma.room.deleteMany({});
+  await prisma.hotel.deleteMany({});
 }
 
 export async function generateValidToken(user?: User) {
@@ -24,3 +27,15 @@ export async function generateValidToken(user?: User) {
 
   return token;
 }
+
+export async function generateTicketTypeByHotel(includesHotel: boolean): Promise<TicketType> {
+  return await prisma.ticketType.create({
+    data: {
+      name: faker.name.findName(),
+      price: faker.datatype.number(),
+      isRemote: faker.datatype.boolean(),
+      includesHotel
+    },
+  });
+}
+
