@@ -182,7 +182,7 @@ describe("GET /hotels/:hotelId", () => {
       const user = await createUser();
       const token = await generateValidToken(user);
       const enrollment = await createEnrollmentWithAddress(user);
-      const ticketType = await createTicketType();
+      const ticketType = await generateTicketTypeByHotel(true);
       await createTicket(enrollment.id, ticketType.id, TicketStatus.PAID);
   
       const response = await server.get(`/hotels/${hotelParams}`).set("Authorization", `Bearer ${token}`);
