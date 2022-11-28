@@ -189,6 +189,19 @@ describe("GET /hotels/:hotelId", () => {
   
       expect(response.status).toBe(httpStatus.NOT_FOUND);
     });
+
+    it("should respond with status 400 when no hotel id is given", async () => {
+      const user = await createUser();
+      const token = await generateValidToken(user);
+      const enrollment = await createEnrollmentWithAddress(user);
+      const ticketType = await generateTicketTypeByHotel(true);
+      await createTicket(enrollment.id, ticketType.id, TicketStatus.PAID);
+      hotelParams = undefined;
+
+      const response = await server.get(`/hotels/${hotelParams}`).set("Authorization", `Bearer ${token}`);
+  
+      expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    });
   
     it("should respond with status 200 and hotel rooms when there is a paid hotel ticket", async () => {
       const user = await createUser();
